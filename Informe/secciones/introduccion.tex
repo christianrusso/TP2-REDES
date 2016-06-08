@@ -1,0 +1,37 @@
+\section{Introducción}
+El presente trabajo práctico aborda principalmente tres problemas:
+\begin{enumerate}
+  \item La implementación de una herramienta que permita realizar el \textit{traceroute} de un paquete
+  desde su nodo origen hasta el destino, identificando todos los hops intermedios.
+  \item La identificación de enlaces submarinos en las rutas de paquetes que tienen como destino
+  nodos en otros continentes mediante el análisis estadístico de los datos obtenidos con el \textit{traceroute}
+  \item Estimar el round trip time (RTT) y el throughput de una conexión simulándola mediante el envío de 
+  sucesivos paquetes \textit{Echo Request} con una herramienta que denominaremos \textit{ping}
+\end{enumerate}
+
+Las dos herramientas mencionadas, \textit{traceroute} y \textit{ping}, fueron 
+escritas en Python utilizan la biblioteca Scapy \footnote{Scapy: \url{http://www.secdev.org/projects/scapy/}} para la generación y comunicación 
+de paquetes. Además, se basan en el envío de paquetes de tipo ICMP (Internet Control Message Protocol)\footnote{ICMP: \url{https://tools.ietf.org/html/rfc792}}.
+ Se pueden utilizar distintos protocolos para implementar estas herramientas
+pero actualmente predomina el uso de ICMP porque, al ser un protocolo de control,
+los firewalls generalmente no los filtran.\par
+
+La información que recolecta el \textit{traceroute} incluye el numero de hop \textit{(nodo utilizado en la ruta para llegar desde el host origen al destino)}, el RTT promedio de cada hop, y el \textit{z-score} o valor standard (ZRTT) de cada hop
+con respecto al promedio de todos. Nos valemos del análisis de éstos datos para identificar los enlaces submarinos y para proponer una heurística que detecte los enlaces submarinos independientemente de la ruta utilizada.
+
+La estimación más confiable del RTT hasta los destinos que formaron parte de nuestros experimentos la calculamos con la fórmula de Karn \& Patridge 
+\footnote{Improving Round-Trip Time Estimates in Reliable Transport Protocols \url{http://ccr.sigcomm.org/archive/1995/jan95/ccr-9501-partridge87.pdf}}:
+
+\begin{center}
+  $SRTT_{i+1}$ = ($\alpha$ * $SRTT_i$) + (1 - $\alpha$) * $s_i$, donde $s_i$ es el i-esimo RTT estimado.
+\end{center}
+
+ El eventual throughput TCP de la conexión entre los host origen y destino lo calculamos, en los casos en los que había pérdida de paquetes con la fórmula de Mathis\footnote{\url{http://cseweb.ucsd.edu/classes/wi01/cse222/papers/mathis-tcpmodel-ccr97.pdf}}
+\begin{center}
+	throughput < $\frac{MSS}{RTT * \sqrt{p}}$
+\end{center}
+
+y, en los casos en que no había perdida de paquetes, utilizamos la formula para enlaces ideales:
+\begin{displaymath}
+  throughput = \frac{|Ventana|}{RTT}
+\end{displaymath}

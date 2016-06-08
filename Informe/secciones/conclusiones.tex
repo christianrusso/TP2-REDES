@@ -1,0 +1,17 @@
+\section{Conclusiones}
+
+La técnica utilizada para implementar el \textit{traceroute} permite identificar de una manera estadística la ruta que recorren la mayoría de los paquetes al \textbf{ir} hacia el host destino. Esto puede resultar útil para intentar identificar el país en el que se encuentra dicho host, aunque los servicios de geolocalización IP no son 100\% confiables ni precisos.
+
+
+Utilizar simultáneos \textit{pings} para muestrear los RTT permite estimar de una manera \textit{fiel} el valor del RTT de la conexión contra un host determinado. Además, podemos adaptar la fórmula de Karn \& Patridge de la manera propuesta \textit{(calculando el valor de $\alpha$ a utilizar en función de la muestra)} para que el RTT estimado no sea afectado por picos en el RTT.
+
+Que el valor del RTT se estime correctamente es de gran importancia ya que esto se utiliza para definir el timeout de retransmisión ha utilizar durante la transmisión y esto afecta directamente al throughput obtenido.
+
+
+También pudimos comprobar empíricamente la importante relación que existe entre la probabilidad de pérdida de paquetes y el throughput de TCP, y lo mucho que el primero afecta al segundo.
+
+
+Argentina se conecta mayoritiariamente con los países de Europa, Asia y Oceanía mediante enlaces con EEUU, y sólo con EEUU. No debiera ser así, dado que centralizar las conexiones allí puede generar un aumento de hops innecesario en la ruta, que aumente los RTT.
+
+
+Por último, concluímos que el uso del valor estándar o valor Z del RTT (ZRTT) es suficiente para identificar enlaces submarinos \textit{(utilizando la heurística propuesta, como muy buenos resultados)}, ya que los cambios que se producen en este valor cuando se compara los dos extremos del enlace son fácilmente perceptibles.
